@@ -1,0 +1,183 @@
+<!doctype html>
+<!--声明文档类型为HTML-->
+<html>
+<!--根标签 超文本标记语言-->
+<!--99%是双标签-->
+
+<head>
+	<!--头部 不可视化标签-->
+	<meta charset="UTF-8">
+	<!--utf-8：国际编码-->
+	<!--网页三要素：标题，关键字，描述-->
+	<title>直播弹幕</title>
+	<meta name="Keywords" content="关键字">
+	<meta name="Description" content="描述">
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		.clearfix:after {
+			display: block;
+			content: "";
+			clear: both;
+		}
+
+		html,
+		body {
+			height: 100%;
+			user-select: none;
+		}
+
+		.screen {
+			overflow: hidden;
+			position: relative;
+			height: 100%;
+			background-color: rgba(0, 0, 0, .8);
+		}
+
+		.send {
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			height: 80px;
+			line-height: 80px;
+			background-color: rgba(0, 0, 0, .8);
+			text-align: center;
+		}
+
+		.input {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			margin: -20px -350px;
+			font-size: 0;
+		}
+
+		.text {
+			float: left;
+			width: 600px;
+			height: 40px;
+			border: none;
+			border-radius: 5px 0 0 5px;
+			text-indent: 7px;
+		}
+
+		.btn {
+			float: left;
+			width: 100px;
+			background-color: #65c33d;
+			line-height: 40px;
+			font-size: 16px;
+			color: #fff;
+			cursor: pointer;
+		}
+
+		.s_show div {
+			position: absolute;
+			font-size: 17px;
+			font-weight: bold;
+		}
+	</style>
+</head>
+
+<body>
+	<!--身体：网页内容，可视化标签-->
+	<div class="screen">
+		<div class="send">
+			<div class="input clearfix">
+				<input type="text" class="text">
+				<div class="btn">发表评论</div>
+			</div>
+		</div>
+		<div class="s_show">
+			<div class="magictime twisterInUp">江湖人称吴彦祖</div>
+			<div class="magictime twisterInUp">我受不了了</div>
+			<div class="magictime twisterInUp">哈哈哈哈或或或或</div>
+			<div class="magictime twisterInUp">扶我起来我还能学</div>
+			<div class="magictime twisterInUp">付出不亚于任何人的努力</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		/*
+		组件化，模块化，工程化
+		可维护性强，扩展性强
+		避免全局污染
+		模块化开发思路->
+			1.初始化本来在屏幕上的弹幕{
+				一获取初始的原始弹幕
+				二垂直随机:页面可视高度减去发送条高度，弹幕元素的top值随机
+				三水平至右边：页面可视宽度减去弹幕自身的宽度
+			2.让弹幕移动
+			一，无限循环的去调用移动函数
+			3.发表评论功能
+			一.获取点击发表事件
+			二创建div
+			三获取一下text的内容
+			四给div添加class
+			五添加到父级对象里
+				*/
+		//功能函数
+		(function () {
+			//获取元素
+			var aShowList = document.querySelectorAll(".s_show div"),
+				oSend = document.querySelector(".send"),
+				oShow = document.querySelector(".s_show"),
+				oBtn = document.querySelector(".btn"),
+				oText = document.querySelector(".text");
+			//点击发表弹幕事件
+			oBtn.onclick = send;
+			//点击发送弹幕函数
+			function send() {
+				var oDiv = document.createElement("div");
+				oDiv.className = "magictime twisterInUp";
+				oDiv.innerHTML = oText.value; //获取文本框内容
+				oShow.appendChild(oDiv);
+				init(oDiv);
+				oText.value="";
+			}
+
+			for (var i = 0; i < aShowList.length; i++) {
+				init(aShowList[i]) //执行init函数
+			}
+
+			//初始化函数
+			function init(obj) { //弹幕对象obj
+				var screenHeight = document.documentElement.clientHeight, //页面可视高度
+					screenWidth = document.documentElement.clientWidth,
+					sendHeight = oSend.clientHeight, //获取send元素的高度
+					left = screenWidth - obj.clientWidth - Math.random() * 100,
+					maxTop = screenHeight - sendHeight - obj.clientHeight;
+				obj.style.top = Math.random() * maxTop + "px"; //[0,maxTop)
+				obj.style.left = left + "px"; //设置left值	 
+				obj.style.color = randomColor();
+				move(obj, left);
+			}
+			//随机颜色函数
+			function randomColor() {
+				return "#" + Math.random().toString(16).slice(-6)
+				// 				   var str="#";
+				// 				   for(var i=0;i<6;i++){
+				// 					   str+=Math.round(Math.random()*16).toString(16);
+				// 				   }
+				//				   return str;
+			}
+			//设置移动函数
+			function move(obj, left) { //传obj为弹幕对象
+				var speed = 3;
+				if (left > -obj.clientWidth) {
+					left -= speed; //left值自减
+					obj.style.left = left + "px"; //设置当前的left值
+					requestAnimationFrame(function () { //动画  参数:回调函数
+						move(obj, left);
+					})
+				} else {
+					oShow.removeChild(obj); //删除子节点
+				}
+			}
+		})()
+	</script>
+</body>
+
+</html>
