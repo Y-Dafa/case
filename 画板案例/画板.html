@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!--声明文档类型为HTML-->
+<html>
+	<!--根标签 超文本标记语言-->
+	<!--99%是双标签-->
+
+	<head>
+		<!--头部 不可视化标签-->
+		<meta charset="UTF-8">
+		<!--utf-8：国际编码-->
+		<!--网页三要素：标题，关键字，描述-->
+		<title>画板</title>
+		<meta name="Keywords" content="关键字">
+		<meta name="Description" content="描述">
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			#wrap {
+				width: 600px;
+				padding: 40px;
+				margin: 50px auto;
+				border: 1px solid;
+				text-align: center;
+			}
+			
+			#wrap input{
+				width: 80px;
+			}
+			
+			#wrap .draw {
+				position: relative;
+				overflow: hidden;
+				width: 100%;
+				height: 500px;
+				margin-top: 40px;
+				background-color: #faa;
+			}
+			
+			.draw div {
+				position: absolute;
+				border-radius: 50%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--身体：网页内容，可视化标签-->
+		<div id="wrap">
+			<div class="tool">
+				<input type="text" class="size" placeholder="size" />
+				<input type="color" class="penColor" />
+				<input type="color" class="bgc" />
+				<button class="clear">清除</button>
+				<button class="back">撤回</button>
+			</div>
+			<div class="draw"></div>
+		</div>
+		<script type="text/javascript">
+			(function() {
+				var oWrap = document.getElementById("wrap"),
+					oSize = oWrap.getElementsByClassName("size")[0],
+					oPenColor = oWrap.getElementsByClassName("penColor")[0],
+					oBgc = oWrap.getElementsByClassName("bgc")[0],
+					oClear = oWrap.getElementsByClassName("clear")[0],
+					oBack = oWrap.getElementsByClassName("back")[0],
+					oDraw = oWrap.getElementsByClassName("draw")[0],
+					size = 12,
+					color = "#000000",
+					oDrawTop = oDraw.offsetTop,
+					oDrawLeft = oDraw.offsetLeft,
+					arrBack = []; //存放被撤回的画笔
+				oSize.onchange = function() {
+					size = this.value;
+				};
+				oPenColor.onchange = function() {
+					color = this.value;
+				};
+				oBgc.onchange = function() {
+					oDraw.style.backgroundColor = this.value;
+				};
+				//为画板添加鼠标按下事件
+				oDraw.onmousedown = function(e) {
+					e = e || window.event;
+					//添加鼠标按住移动事件
+					//区分鼠标左右键，e.which 为1表示左键，为33表示右键，
+					if(e.which != 1) return; //如果不为左键直接return返回出去
+					arrBack.push([]);
+					document.onmousemove = function(e) {
+						e = e || window.event;
+						//阻止鼠标默认事件
+						//兼容：e.preventDefault ?e.preventDefault():e.returnValue=false;
+						e.preventDefault();
+						var div = document.createElement("div");
+						div.style.width = size + "px";
+						div.style.height = size + "px";
+						div.style.backgroundColor = color;
+						div.style.top = e.clientY - oDrawTop + "px";
+						div.style.left = e.clientX - oDrawLeft + "px";
+						oDraw.appendChild(div);
+						arrBack[arrBack.length - 1].push(div);
+					};
+				};
+				//添加鼠标抬起事件
+				document.onmouseup = function() {
+					this.onmousemove = null;
+				}
+				oClear.onclick = function() {
+					oDraw.innerHTML = "";
+				}
+				oBack.onclick = function() {
+					if(!arrBack.length) return; //判断若数组为空则返回
+					var lastItem = arrBack.pop(); //获得被删除的数组
+					for(var i = 0; i < lastItem.length; i++) {
+						oDraw.removeChild(lastItem[i]);
+					}
+				};
+			})();
+		</script>
+	</body>
+
+</html>
