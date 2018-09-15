@@ -1,0 +1,81 @@
+<!doctype html>
+<!--声明文档类型为HTML-->
+<html>
+	<!--根标签 超文本标记语言-->
+	<!--99%是双标签-->
+
+	<head>
+		<!--头部 不可视化标签-->
+		<meta charset="UTF-8">
+		<!--utf-8：国际编码-->
+		<!--网页三要素：标题，关键字，描述-->
+		<title>单个小球运动</title>
+		<meta name="Keywords" content="关键字">
+		<meta name="Description" content="描述">
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			#ball {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100px;
+				height: 100px;
+				border-radius: 50%;
+				background-color: cornflowerblue;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--身体：网页内容，可视化标签-->
+		<div id="ball"></div>
+		<script type="text/javascript">
+			(function() {
+				var oBall = document.getElementById("ball"),
+					speedX = 5, //定义运动步长
+					speedY = 8,
+					//定义最大活动范围
+					maxX = document.documentElement.clientWidth - oBall.offsetWidth,
+					maxY = document.documentElement.clientHeight - oBall.offsetHeight,
+					//获得初始值
+					startTop = oBall.offsetTop,
+					startLeft = oBall.offsetLeft;
+
+				function run() {
+					//初始值加步长
+					startTop += speedY;
+					startLeft += speedX;
+					if(startTop <= 0 || startTop >= maxY) {
+						speedY = -speedY;
+						//					if(startTop<=0){
+						//						startTop=0;
+						//					}
+						//					if(startTop>=maxY){
+						//						startTop=maxY;
+						//					}
+						startTop = Math.max(0, startTop);
+						startTop = Math.min(startTop, maxY);
+					}
+					if(startLeft <= 0 || startLeft >= maxX) {
+						speedX = -speedX;
+						startLeft = Math.max(0, startLeft);
+						startLeft = Math.min(startLeft, maxX);
+					}
+					oBall.style.top = startTop + "px";
+					oBall.style.left = startLeft + "px";
+					requestAnimationFrame(run);
+				}
+				window.onresize = function() {
+					maxY = document.documentElement.clientHeight - oBall.offsetHeight;
+					maxX = document.documentElement.clientWidth - oBall.offsetWidth;
+				};
+				requestAnimationFrame(run);
+			})();
+		</script>
+	</body>
+
+</html>
