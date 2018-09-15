@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>图片时间</title>
+	</head>
+	<style>
+		*{
+		margin:0;
+		padding:0;
+	}
+	ul{
+		overflow: hidden;
+		list-style: none;
+		width:350px;
+		margin:30px auto;
+		padding:30px;
+		border:1px solid #ccc;
+		border-radius: 10px;
+		text-align: center;
+		box-sizing: border-box;
+	}
+	li{
+		float:left;
+	}
+	li.time{
+		width: 42px;
+		height: 65px;
+	}
+	
+	</style>
+	<body>
+		<ul>
+			<li class="time"><img src="images/02/1.png" alt="" /></li>
+			<li class="time"><img src="images/02/2.png" alt="" /></li>
+			<li class="dot"><img src="images/02/d.png" alt="" /></li>
+			<li class="time"><img src="images/02/1.png" alt="" /></li>
+			<li class="time"><img src="images/02/2.png" alt="" /></li>
+			<li class="dot"><img src="images/02/d.png" alt="" /></li>
+			<li class="time"><img src="images/02/1.png" alt="" /></li>
+			<li class="time"><img src="images/02/2.png" alt="" /></li>
+		</ul>
+		<script>
+			(function(){
+				var aLiTime=document.getElementsByClassName("time");//获取时间图片
+				function change(){//封装时间改变函数
+					var date=new Date(),//获取本地时间和获取时分秒
+						hh=date.getHours(),
+						mm=date.getMinutes(),
+						ss=date.getSeconds(),
+						str=addZero(hh)+addZero(mm)+addZero(ss);//拼接为当前时间6位
+					//for循环遍历获得当前时间对应的图片
+					for(var i=0;i<str.length;i++){
+						aLiTime[i].innerHTML="<img src='images/02/"+str[i]+".png'>";
+					}
+				}
+				change();//函数先自执行一遍
+				setInterval(change,1000);//设置定时器调用函数
+				function addZero(n){//添0函数
+					return n < 10 ?"0"+n:n+"";
+				}
+			})()
+		</script>
+	</body>
+</html>

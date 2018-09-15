@@ -1,0 +1,235 @@
+<!doctype html>
+<!--声明文档类型为HTML-->
+<html>
+	<!--根标签 超文本标记语言-->
+	<!--99%是双标签-->
+
+	<head>
+		<!--头部 不可视化标签-->
+		<meta charset="UTF-8">
+		<!--utf-8：国际编码-->
+		<!--网页三要素：标题，关键字，描述-->
+		<title>无缝轮播</title>
+		<meta name="Keywords" content="关键字">
+		<meta name="Description" content="描述">
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			li {
+				list-style: none;
+			}
+			
+			.clearfix:after {
+				display: block;
+				content: "";
+				clear: both;
+			}
+			
+			#banner {
+				overflow: hidden;
+				position: relative;
+				width: 500px;
+				height: 330px;
+				margin: 50px auto;
+			}
+			
+			#banner .box {
+				position: relative;
+				width: 100%;
+				height: 100%;
+				z-index: 1;
+				/*给默认层级为1*/
+			}
+			
+			.box>ul {
+				position: absolute;
+				width: 800%;
+			}
+			
+			.box>ul>li {
+				float: left;
+			}
+			
+			.box>ul li img {
+				width: 500px;
+				height: 330px;
+			}
+			
+			#banner .tab {
+				position: absolute;
+				display: flex;
+				width: 100%;
+				justify-content: center;
+				bottom: 10%;
+				z-index: 2;
+			}
+			
+			.tab li {
+				float: left;
+				width: 13px;
+				height: 13px;
+				background-color: #fff;
+				border-radius: 50%;
+				transition: background-color.5s;
+				cursor: pointer;
+			}
+			
+			.tab li+li {
+				margin-left: 7px;
+			}
+			
+			.tab li.on {
+				background-color: #f00;
+			}
+			
+			.btn {
+				position: absolute;
+				top: 50%;
+				width: 40px;
+				height: 60px;
+				margin-top: -30px;
+				background-color: rgba(0, 0, 0, .5);
+				color: #fff;
+				font-size: 40px;
+				text-align: center;
+				line-height: 60px;
+				z-index: 3;
+				cursor: pointer;
+			}
+			
+			.prev {
+				left: 0;
+			}
+			
+			.next {
+				right: 0;
+			}
+		</style>
+		<script src="js/move.js"></script>
+	</head>
+
+	<body>
+		<!--身体：网页内容，可视化标签-->
+		<div id="banner">
+			<div class="box">
+				<ul class="pic">
+					<li><img src="images/01/1.jpg" alt="" /></li>
+					<li><img src="images/01/2.jpg" alt="" /></li>
+					<li><img src="images/01/3.jpg" alt="" /></li>
+					<li><img src="images/01/4.jpg" alt="" /></li>
+					<li><img src="images/01/5.jpg" alt="" /></li>
+					<li><img src="images/01/6.jpg" alt="" /></li>
+					<li><img src="images/01/1.jpg" alt="" /></li>
+				</ul>
+			</div>
+			<ul class="tab clearfix">
+				<li class="on"></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+			<span class="btn prev"><</span>
+			<span class="btn next">></span>
+		</div>
+		<script>
+			(function() {
+				var oBanner = document.getElementById("banner"),
+					oPicUl = oBanner.querySelector(".box .pic"),
+					oPicLi = oPicUl.querySelectorAll("li"),
+					aTabLi = oBanner.querySelectorAll(".tab li"),
+					oPerv = oBanner.querySelector(".prev"),
+					oNext = oBanner.querySelector(".next"),
+					index = 0,
+					bw = 500,
+					timer = null,
+					len = oPicLi.length,
+					date = new Date(); //获取当前时间
+				/***************点击下一个****************/
+				oNext.onclick = function() {
+					if(new Date() - date > 800) {
+						aTabLi[index].classList.remove("on");
+						index++;
+						if(index == len - 1) {
+							aTabLi[0].classList.add("on");
+						} else {
+							aTabLi[index].classList.add("on");
+						}
+						Move(oPicUl, {
+							left: -bw * index
+						}, 750, null, function() {
+							if(index == len - 1) {
+								this.style.left = 0;
+								index = 0;
+								console.log("切换到第二个的第一张")
+							}
+						});
+					}
+					date = new Date(); //更新时间
+				}
+				/***************点击上一个****************/
+				oPerv.onclick = function() {
+					if(new Date() - date > 800) {
+						aTabLi[index].classList.remove("on");
+						if(index == 0) {
+							oPicUl.style.left = -(len - 1) * bw + "px";
+							index = len - 1;
+							console.log(index);
+						}
+						index--;
+						aTabLi[index].classList.add("on");
+						Move(oPicUl, {
+							left: -bw * index
+						}, 750);
+					}
+					date = new Date();
+				};
+				for(var i = 0; i < aTabLi.length; i++) {
+					aTabLi[i].i = i; //自定义属性存小按钮的下标
+					aTabLi[i].onclick = function() {
+						aTabLi[index].classList.remove("on");
+						index = this.i; //更新下标index
+						aTabLi[index].classList.add("on");
+						Move(oPicUl, {
+							left: -bw * index
+						}, 750);
+					};
+				}
+				oBanner.onmouseover = function() {
+					clearInterval(timer);
+				}
+				oBanner.onmouseleave = function() {
+					timer = setInterval(change, 1500);
+				};
+				//自动切换
+				timer = setInterval(change, 1500);
+
+				function change() {
+					if(new Date() - date > 800) {
+						aTabLi[index].classList.remove("on");
+						index++;
+						if(index == len - 1) {
+							aTabLi[0].classList.add("on");
+						} else {
+							aTabLi[index].classList.add("on");
+						}
+						Move(oPicUl, {
+							left: -bw * index
+						}, 750, null, function() {
+							if(index == len - 1) {
+								this.style.left = 0;
+								index = 0;
+							}
+						});
+					}
+					date = new Date();
+				}
+			})();
+		</script>
+	</body>
+
+</html>
