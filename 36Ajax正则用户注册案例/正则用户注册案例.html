@@ -1,0 +1,144 @@
+<!doctype html>
+<!--声明文档类型为HTML-->
+<html>
+	<!--根标签 超文本标记语言-->
+	<!--99%是双标签-->
+
+	<head>
+		<!--头部 不可视化标签-->
+		<meta charset="UTF-8">
+		<!--utf-8：国际编码-->
+		<!--网页三要素：标题，关键字，描述-->
+		<title>正则用户注册</title>
+		<meta name="Keywords" content="关键字">
+		<meta name="Description" content="描述">
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			.clearfix:after {
+				/*清除浮动*/
+				content: "";
+				display: block;
+				clear: both;
+			}
+			
+			#wrap {
+				width: 300px;
+				padding: 30px;
+				margin: 50px auto;
+				border: 1px solid #ccc;
+			}
+			
+			#wrap h1 {
+				padding-bottom: 20px;
+				font-size: 20px;
+				text-align: center;
+			}
+			
+			#wrap li {
+				position: relative;
+				list-style-type: none;
+				padding: 10px 0;
+			}
+			
+			#wrap input {
+				float: right;
+				width: 100%;
+				height: 35px;
+				padding-left: 20px;
+				border: 1px solid #ccc;
+				box-sizing: border-box;
+			}
+			
+			#wrap li p {
+				display: none;
+				position: absolute;
+				top: 50%;
+				left: 115%;
+				width: 150px;
+				height: 30px;
+				margin-top: -15px;
+				line-height: 30px;
+				border: 1px solid red;
+				text-align: center;
+				color: red;
+			}
+			
+			#wrap #btn {
+				display: block;
+				width: 100%;
+				height: 40px;
+				margin: 15px auto;
+				border: 0;
+				outline: 0;
+				/*去除自带边框*/
+				background-color: #3cf;
+				font-size: 16px;
+				color: #fff;
+				border-radius: 4px;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--身体：网页内容，可视化标签-->
+		<div id="wrap">
+			<h1>用户注册</h1>
+			<ul>
+				<li class="clearfix"><input type="text" name="username" id="user" placeholder="请输入8位数字id">
+					<p></p>
+				</li>
+				<li class="clearfix"><input type="password" name="userpwd" id="pwd1" placeholder="请输入6-12位字母数字下划线的密码">
+					<p></p>
+				</li>
+				<li class="clearfix"><input type="password" id="pwd2" placeholder="再次输入密码">
+					<p></p>
+				</li>
+				<li class="clearfix"><input type="text" id="email" name="email" placeholder="请输入邮箱">
+					<p></p>
+				</li>
+				<li class="clearfix"><input type="text" id="phone" name="phone" placeholder="请输入手机号">
+					<p></p>
+				</li>
+			</ul>
+			<button id="btn">注册</button>
+		</div>
+		<script type="text/javascript">
+			(function() {
+				var oId = document.getElementById("user"),
+					oPwd1 = document.getElementById("pwd1"),
+					oPwd2 = document.getElementById("pwd2"),
+					oEmail = document.getElementById("email"),
+					oPhone = document.getElementById("phone"),
+					oBtn = document.getElementById("btn");
+				//定义正则
+				var setId = /^[0-9]{8}$/,
+					setPwd = /^(\w){6,12}$/,
+					setEmail = /^[a-zA-Z0-9]+([-_\.][a-zA-Z0-9])*@[a-zA-Z0-9]+\.[a-zA-Z0-9]{2,4}$/,
+					setPhone = /^1[3-8][0-9]{9}$/;
+				oBtn.onclick = function() {
+					var bool = isMatch(oId, setId) && isMatch(oPwd1, setPwd) && isMatch(oPwd2, setPwd) && isMatch(oEmail, setEmail) && isMatch(oPhone, setPhone);
+					if(oPwd1.value == "") {
+						oPwd2.nextSibling.innerHTML = "格式不正确";
+					} else {
+						var bool2 = (oPwd1.value === oPwd2.value);
+						bool2 ? oPwd2.nextSibling.innerHTML = "格式正确" : oPwd2.nextSibling.innerHTML = "密码格式不正确";
+					}
+					(bool && bool2) ? alert("注册成功"): console.log("请重新填写");
+				};
+				//正则判断函数返回一个布尔值结果
+				function isMatch(obj, Set) {
+					var bool = Set.test(obj.value);
+					obj.nextSibling.style.display = "block";
+					bool ? obj.nextSibling.innerHTML = "格式正确" : obj.nextSibling.innerHTML = "请按照要求填写";
+					return bool;
+				}
+			})();
+		</script>
+	</body>
+
+</html>

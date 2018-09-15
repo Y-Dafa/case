@@ -1,0 +1,90 @@
+<!doctype html>
+<!--声明文档类型为HTML-->
+<html>
+	<!--根标签 超文本标记语言-->
+	<!--99%是双标签-->
+
+	<head>
+		<!--头部 不可视化标签-->
+		<meta charset="UTF-8">
+		<!--utf-8：国际编码-->
+		<!--网页三要素：标题，关键字，描述-->
+		<title>百度搜索</title>
+		<meta name="Keywords" content="关键字">
+		<meta name="Description" content="描述">
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			li {
+				list-style: none;
+			}
+			
+			#wrap {
+				width: 400px;
+				margin: 50px auto;
+			}
+			
+			#wrap input {
+				width: 378px;
+				height: 40px;
+				outline: none;
+				padding-left: 20px;
+				border: alicebluepx solid #ccc;
+				font-size: 18px;
+			}
+			
+			#wrap ul {
+				width: 398px;
+				border: 1px solid #ccc;
+				border-top: none;
+			}
+			
+			#wrap ul li a {
+				display: block;
+				width: 100%;
+				height: 30px;
+				line-height: 30px;
+				font-size: 14px;
+				text-indent: 20px;
+				color: #000;
+				text-decoration: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--身体：网页内容，可视化标签-->
+		<div id="wrap">
+			<input type="text" id="text" />
+			<ul id="list"></ul>
+		</div>
+		<script>
+			var oText = document.getElementById("text"),
+				oList = document.getElementById("list");
+			//当Input内容发生变化立马触发，和onkeydown很像
+			oText.oninput = function() {
+				var val = this.value;
+				if(val) {//输入框不为空时
+					var oS = document.createElement("script");
+					oS.src = `https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=${val}&cb=dafa`;
+					document.body.appendChild(oS);
+					oS.onload = function() {
+						document.body.removeChild(oS); //下载完成后移除script标签
+					}
+				}
+			}
+				function dafa(obj) {
+					var arr = obj.s, //获得对象里联想词的数组
+						html = "";
+					for(var i = 0, len = arr.length; i < len; i++) {
+						html += `<li><a href="https://www.baidu.com/s?wd=${arr[i]}">${arr[i]}</a></li>`;
+					}
+					oList.innerHTML = html;
+				}
+		</script>
+	</body>
+
+</html>
